@@ -1,9 +1,11 @@
 <?php namespace Way\Tests;
 
+use \Illuminate\Database\DatabaseManager;
+
 class Factory {
 
     /**
-     * Name of class to create
+     * Model instance
      */
     protected $class;
 
@@ -21,12 +23,18 @@ class Factory {
     protected $name;
 
     /**
-     * User provided fields that
-     * should take precendence
+     * DB Layer
+     *
+     * @var Illuminate\Database\DatabaseManager
+     */
+    protected $db;
+
+    /**
+     * Remembers table fields for factories
      *
      * @var array
      */
-    protected $overrides;
+    protected static $columns;
 
     /**
      * Constructor
@@ -34,21 +42,20 @@ class Factory {
      * @param $class Name of model to create
      * @param array $overrides
      */
-    public function __construct($class, array $overrides = array())
+    public function __construct(DatabaseManager $db = null)
     {
-        $this->class = new $class; // Post
-        $this->tableName = str_plural($class); // Posts
-        $this->overrides = $overrides;
+        $this->db = $db ?: \App::make('db');
     }
 
-    /**
+    /*
      * Create a factory AND save
-     * it to the DB.
+     // * it to the DB.
      *
      * @param  string $class
      * @param  array  $columns
      * @return boolean
      */
+
     public static function create($class, array $columns = array())
     {
         $instance = static::make($class, $columns);
@@ -84,9 +91,9 @@ class Factory {
      */
     public static function make($class, $columns = array())
     {
-        $instance = new static($class, $columns);
+        $instance = new static;
 
-        return $instance->fire();
+        return $instance->fire($class, $columns);
     }
 
     /**
@@ -94,8 +101,11 @@ class Factory {
      *
      * @return object
      */
-    public function fire()
+    public function fire($class, array $overrides = array())
     {
+        $this->class = new $class; // Post
+        $this->tableName = str_plural($class); // Posts
+
         // First, we dynamically fetch the fields for the table
         $columns = $this->getColumns($this->getTableName());
 
@@ -106,7 +116,7 @@ class Factory {
         // Finally, if they specified any overrides...
         // Factory::make('Post', ['title' => null]),
         // we'll make those take precendence.
-        $this->applyOverrides();
+        $this->applyOverrides($overrides);
 
         // And then return the new class
         return $this->class;
@@ -138,9 +148,9 @@ class Factory {
      *
      * @return void
      */
-    protected function applyOverrides()
+    protected function applyOverrides(array $overrides)
     {
-        foreach ($this->overrides as $field => $value)
+        foreach ($overrides as $field => $value)
         {
            $this->class->$field = $value;
         }
@@ -152,9 +162,19 @@ class Factory {
      * @param  string $tableName
      * @return array
      */
-    protected function getColumns($tableName)
+    public function getColumns($tableName)
     {
-        return \DB::getDoctrineSchemaManager()->listTableDetails($tableName)->getColumns();
+        // We only want to fetch the table details
+        // once. We'll store these fields with a
+        // $columns property for future fetching.
+        if (isset(static::$columns[$this->tableName]))
+        {
+            // then just grab those fields
+            return static::$columns[$this->tableName];
+        }
+
+        // This will only run the first time the factory is created.
+        return static::$columns[$this->tableName] = $this->db->getDoctrineSchemaManager()->listTableDetails($tableName)->getColumns();
     }
 
     /**
@@ -206,12 +226,13 @@ class Factory {
 
         // Create the method name to call and call it
         $method = 'get' . ucwords($method);
+
         if (method_exists($this, $method))
         {
             return $this->{$method}();
         }
 
-        throw new Exception('Could not calculate correct fixture method.');
+        throw new \Exception('Could not calculate correct fixture method.');
     }
 
     /**
@@ -231,7 +252,7 @@ class Factory {
      * @param  string $col
      * @return string
      */
-    protected function getDataType(\Doctrine\DBAL\Schema\Column $col)
+    public function getDataType($col)
     {
         return $col->getType()->getName();
     }
@@ -300,8 +321,7 @@ class Factory {
      */
     protected function getPhone()
     {
-        // TODO - make this not suck.
-        return 5555555555;
+        return '555-55-5555';
     }
 
     /**
@@ -331,7 +351,7 @@ class Factory {
      *
      * @return string
      */
-    public function getDatetime()
+    protected function getDatetime()
     {
         return date('Y-m-d H:i:s');
     }
@@ -348,8 +368,9 @@ class Factory {
     {
         // A litle weird. TODO
         $overrides = isset($overrides[0]) ? $overrides[0] : $overrides;
+        $instance = new static;
 
-        return (new static($class, $overrides))->fire();
+        return $instance->fire($class, $overrides);
     }
 
 }

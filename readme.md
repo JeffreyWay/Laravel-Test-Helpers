@@ -111,7 +111,7 @@ class UserTest extends TestCase {
 }
 ```
 
-All model test helpers are stored as trait. This makes them super easy to import into our test class. Simply add `use Way\Tests\ModelHelpers;` to top of the class, and you should be good to go.
+All model test helpers are stored as trait. This makes them super easy to import into our test class. Simply add `use Way\Tests\ModelHelpers;` to the top of the class, and you should be good to go.
 
 In the example above, we are asserting that a User model should be invalid, unless its `name` field is not empty.
 
