@@ -39,8 +39,7 @@ class Factory {
     /**
      * Constructor
      *
-     * @param $class Name of model to create
-     * @param array $overrides
+     * @param $db
      */
     public function __construct(DatabaseManager $db = null)
     {
@@ -55,7 +54,6 @@ class Factory {
      * @param  array  $columns
      * @return boolean
      */
-
     public static function create($class, array $columns = array())
     {
         $instance = static::make($class, $columns);
@@ -98,6 +96,9 @@ class Factory {
 
     /**
      * Set dummy data on fields
+     *
+     * @param $class Name of class to create factory for
+     * @param $overrides
      *
      * @return object
      */
