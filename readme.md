@@ -16,6 +16,8 @@ As usual, install this package through Composer.
 }
 ```
 
+Please note that this package requires [Mockery](https://packagist.org/packages/mockery/mockery).
+
 ## Factories
 
 Ever found yourself repeatedly creating test models over and over?
