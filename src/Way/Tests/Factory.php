@@ -45,13 +45,21 @@ class Factory {
     protected static $isSaving = false;
 
     /**
+     * For retrieving dummy data
+     *
+     * @var DataStore
+     */
+    protected $dataStore;
+
+    /**
      * Constructor
      *
      * @param $db
      */
-    public function __construct(DatabaseManager $db = null)
+    public function __construct(DatabaseManager $db = null, DataStore $dataStore = null)
     {
         $this->db = $db ?: \App::make('db');
+        $this->dataStore = $dataStore ?: new DataStore;
     }
 
     /*
@@ -195,6 +203,11 @@ class Factory {
     {
         foreach($columns as $key => $col)
         {
+            if ($relation = $this->hasForeignKey($key))
+            {
+                $this->class->$key = $this->createRelationship($relation);
+                continue;
+            }
             $this->class->$key = $this->setColumn($key, $col);
         }
     }
@@ -208,14 +221,6 @@ class Factory {
     protected function setColumn($name, $col)
     {
         if ($name === 'id') return;
-
-        // Do we need to create a relationship?
-        // Look for a field, like author_id or author-id
-        if (static::$isSaving and preg_match('/([A-z]+)[-_]id$/i', $name, $matches))
-        {
-            // If found, create the relationship
-            return $this->createRelationship($matches[1]);
-        }
 
         // We'll first try to get special fields
         // That way, we can insert appropriate
@@ -235,13 +240,30 @@ class Factory {
 
         // Create the method name to call and call it
         $method = 'get' . ucwords($method);
-
-        if (method_exists($this, $method))
+        if (method_exists($this->dataStore, $method))
         {
-            return $this->{$method}();
+            return $this->dataStore->{$method}();
         }
 
         throw new \Exception('Could not calculate correct fixture method.');
+    }
+
+    /**
+     * Is the field a foreign key?
+     *
+     * @param  string $field
+     * @return mixed
+     */
+    protected function hasForeignKey($field)
+    {
+        // Do we need to create a relationship?
+        // Look for a field, like author_id or author-id
+        if (static::$isSaving and preg_match('/([A-z]+)[-_]id$/i', $field, $matches))
+        {
+            return $matches[1];
+        }
+
+        return false;
     }
 
     /**
@@ -266,104 +288,6 @@ class Factory {
         return $col->getType()->getName();
     }
 
-    /**
-     * Get random string
-     *
-     * @return string
-     */
-    protected function getString()
-    {
-        $strings = array(
-            'foo', 'bar', 'baz', 'bizz'
-        );
-
-        return $strings[array_rand($strings, 1)];
-    }
-
-    /**
-     * Get random integer
-     *
-     * @return intger
-     */
-    protected function getInteger()
-    {
-        return rand(1, 100);
-    }
-
-    /**
-     * Get random name
-     *
-     * @return string
-     */
-    protected function getName()
-    {
-        $names = array(
-            'Joe', 'Frank', 'Keith', 'John', 'Jeffrey', 'Matt', 'Sarah', 'Lauren', 'Kim'
-        );
-
-        return $this->name = $names[array_rand($names, 1)];
-    }
-
-
-    /**
-     * Get random email
-     *
-     * @return string
-     */
-    protected function getEmail()
-    {
-        // If a name property is set on the instance, then use that name as
-        // the "to" for the email address. Otherwise, get a random one.
-        $name = isset($this->name)
-            ? $this->name
-            : $this->getName();
-
-        $name = strtolower($name);
-
-        return "{$name}@example.com";
-    }
-
-    /**
-     * Get telephone number
-     *
-     * @return string
-     */
-    protected function getPhone()
-    {
-        return '555-55-5555';
-    }
-
-    /**
-     * Get random age
-     *
-     * @return string
-     */
-    protected function getAge()
-    {
-        return $this->getInteger();
-    }
-
-    /**
-     * Get some random Lorem text
-     *
-     * @return string
-     */
-    protected function getText()
-    {
-        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " .
-                "Fusce tortor nulla, cursus eu pellentesque sed, accumsan " .
-                "a risus. Pellentesque et commodo lectus. In ac urna.";
-    }
-
-    /**
-     * Get current MySQL-formatted date
-     *
-     * @return string
-     */
-    protected function getDatetime()
-    {
-        return date('Y-m-d H:i:s');
-    }
 
     /**
      * Handle dynamic factory creation calls,

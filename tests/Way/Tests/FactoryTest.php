@@ -1,6 +1,7 @@
 <?php
 
 use Way\Tests\Factory;
+use Way\Tests\DataStore;
 use Mockery as m;
 
 class FactoryTest extends PHPUnit_Framework_TestCase {
@@ -8,7 +9,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase {
     public function setUp()
     {
         m::mock('Post');
-        m::mock('\Illuminate\Database\DatabaseManager');
+        $this->mockedDb = m::mock('\Illuminate\Database\DatabaseManager');
     }
 
     public function tearDown()
@@ -18,7 +19,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase {
 
     public function testCanCreateFactory()
     {
-        $factory = m::mock('Way\Tests\Factory')->makePartial();
+        $factory = m::mock('Way\Tests\Factory', [$this->mockedDb, new DataStore])->makePartial();
 
         $factory->shouldReceive('getColumns')
                 ->andReturn([
@@ -39,7 +40,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase {
 
     public function testCanOverrideDefaults()
     {
-        $factory = m::mock('Way\Tests\Factory')->makePartial();
+        $factory = m::mock('Way\Tests\Factory', [$this->mockedDb, new DataStore])->makePartial();
         $factory->shouldReceive('getColumns')->andReturn(['email' => 'sample@example.com']);
         $factory->shouldReceive('getDataType')->andReturn('string');
 
