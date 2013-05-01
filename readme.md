@@ -31,11 +31,6 @@ use Way\Tests\Factory;
 
 class UserTest extends TestCase {
 
-    /**
-     * A basic functional test example.
-     *
-     * @return void
-     */
     public function testBasicExample()
     {
         $user = Factory::attributesFor('User');
