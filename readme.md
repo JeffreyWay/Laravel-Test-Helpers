@@ -251,6 +251,4 @@ class DemoTest extends PHPUnit_Framework_TestCase {
 }
 ```
 
-> Don't forget to include Composer's autoloader into your project somewhere: `require_once 'vendor/autoload.php'`. Alternatively, you can specify a bootstrap option when running PHPUnit: `phpunit --bootstrap vendor/autoload.php --colors SomeTest.php`
-
 Remember: these are simple wrappers around PHPUnit's assertions. Refer to the sidebar [here](http://www.phpunit.de/manual/current/en/index.html) for a full list.
