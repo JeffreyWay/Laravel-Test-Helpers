@@ -226,7 +226,7 @@ class Factory {
         // If we couldn't, we'll instead grab
         // the datatype for the field, and
         // generate a value to fit that.
-        elsei
+        else
         {
             $method = $this->getDataType($col);
         }
