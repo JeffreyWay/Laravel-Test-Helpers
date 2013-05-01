@@ -3,6 +3,7 @@
 class Should extends TestFacade {
     protected $aliases = array(
         'have' => 'assertContains',
+        'eq'   => 'assertEquals'
     );
 
     protected function getMethod($methodName)
