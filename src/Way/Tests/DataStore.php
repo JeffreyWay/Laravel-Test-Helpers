@@ -20,7 +20,7 @@ class DataStore {
             'foo', 'bar', 'baz', 'bizz'
         );
 
-        return $strings[array_rand($strings, 1)];
+        return $this->random($strings);
     }
 
     /**
@@ -44,7 +44,7 @@ class DataStore {
             'Joe', 'Frank', 'Keith', 'John', 'Jeffrey', 'Matt', 'Sarah', 'Lauren', 'Kim'
         );
 
-        return $this->name = $names[array_rand($names, 1)];
+        return $this->name = $this->random($names);
     }
 
     /**
@@ -98,6 +98,89 @@ class DataStore {
     }
 
     /**
+     * Get some random Street name
+     *
+     * @return string
+     */
+    public function getStreet()
+    {
+        $streets = array('Baker', 'First', 'Main', 'Second', 'Broad');
+
+        return $this->random($streets);
+    }
+
+    /**
+     * Get some random street extension
+     *
+     * @return string
+     */
+    public function getStreetExtension()
+    {
+        $extensions = array('Ave', 'St', 'Circle', 'Road');
+
+        return $this->random($extensions);
+    }
+
+    /**
+     * Get some city name
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        $cities = array('Nashville', 'Chattanooga', 'London', 'San Francisco', 'Bucksnort');
+
+        return $this->random($cities);
+    }
+
+    /**
+     * Get some random state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        $states = array('TN', 'WA', 'MA', 'CA');
+
+        return $this->random($states);
+    }
+
+    /**
+     * Get some random zip code
+     *
+     * @return string
+     */
+    public function getZip()
+    {
+        $zips = array(37121, 42198, 34189, 37115);
+
+        return $this->random($zips);
+    }
+
+    /**
+     * Get dummy website address
+     *
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return 'http://example.com';
+    }
+
+    /**
+     * Get random address
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        $address = $this->getInteger() . ' ' . $this->getStreet() . ' ' . $this->getStreetExtension() . PHP_EOL;
+        $address .= $this->getCity() . ', ' . $this->getState() . ' ' . $this->getZip();
+
+        return $address;
+    }
+
+    /**
      * Get current MySQL-formatted date
      *
      * @return string
@@ -105,6 +188,17 @@ class DataStore {
     public function getDatetime()
     {
         return date('Y-m-d H:i:s');
+    }
+
+    /**
+     * Return random item from provided array
+     *
+     * @param  array $arr
+     * @return string
+     */
+    protected function random(array $arr)
+    {
+        return $arr[array_rand($arr, 1)];
     }
 
 }

@@ -276,7 +276,9 @@ class Factory {
     {
         $special = [
             'name', 'email', 'phone',
-            'age'
+            'age', 'address', 'city',
+            'state', 'zip', 'street',
+            'website'
         ];
 
         return in_array($field, $special) ? $field : false;
