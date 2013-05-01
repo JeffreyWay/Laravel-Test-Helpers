@@ -47,7 +47,6 @@ class DataStore {
         return $this->name = $names[array_rand($names, 1)];
     }
 
-
     /**
      * Get random email
      *

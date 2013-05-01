@@ -2,6 +2,8 @@
 
 use \Illuminate\Database\DatabaseManager;
 
+class ModelNotFoundException extends \Exception {}
+
 class Factory {
 
     /**
@@ -115,11 +117,11 @@ class Factory {
      */
     public function fire($class, array $overrides = array())
     {
-        $this->class = new $class; // Post
-        $this->tableName = str_plural($class); // Posts
+        $this->parseClassName($class);
+        $this->class = $this->createModel($class);
 
         // First, we dynamically fetch the fields for the table
-        $columns = $this->getColumns($this->getTableName());
+        $columns = $this->getColumns($this->tableName);
 
         // Then, we set dummy value on the model.
         $this->setColumns($columns);
@@ -133,24 +135,38 @@ class Factory {
         return $this->class;
     }
 
-    /**
-     * Determine what the table name is. So, Factory('Post') will
-     * look for a table name, called posts. If the class has a
-     * namespace, we will strip off everything but the file bit.
-     * So Factory::make('Models\Post') will still look for a posts table.
-     *
-     * @return string
-     */
-    protected function getTableName()
+    protected function parseClassName($class)
     {
-        if (str_contains($this->tableName, '\\'))
-        {
-            $tableName = substr(strrchr($this->tableName, '\\'), 1);
+        // are we dealing with a namespace?
+        if ($this->isNamespaced($class))
+            return $this->tableName = str_plural(substr(strrchr($class, '\\'), 1));
 
-            return $tableName;
-        }
+        return $this->tableName = str_plural($class);
+    }
 
-        return $this->tableName;
+    /**
+     * Initialize the given model
+     *
+     * @param  string $class
+     * @return object
+     */
+    protected function createModel($class)
+    {
+        if (class_exists($class))
+            return new $class;
+
+        throw new ModelNotFoundException;
+    }
+
+    /**
+     * Is the model namespaced?
+     *
+     * @param  string $class
+     * @return boolean
+     */
+    protected function isNamespaced($class)
+    {
+        return str_contains($class, '\\');
     }
 
     /**
