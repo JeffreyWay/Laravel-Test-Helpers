@@ -135,6 +135,12 @@ class Factory {
         return $this->class;
     }
 
+    /**
+     * Calulate the table name
+     *
+     * @param  string $class
+     * @return string
+     */
     protected function parseClassName($class)
     {
         // are we dealing with a namespace?
