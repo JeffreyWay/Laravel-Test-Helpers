@@ -117,7 +117,7 @@ class Factory {
      */
     public function fire($class, array $overrides = array())
     {
-        $this->parseClassName($class);
+        $this->tableName = $this->parseTableName($class);
         $this->class = $this->createModel($class);
 
         // First, we dynamically fetch the fields for the table
@@ -141,13 +141,11 @@ class Factory {
      * @param  string $class
      * @return string
      */
-    protected function parseClassName($class)
+    protected function parseTableName($class)
     {
-        // are we dealing with a namespace?
-        if ($this->isNamespaced($class))
-            return $this->tableName = str_plural(substr(strrchr($class, '\\'), 1));
-
-        return $this->tableName = str_plural($class);
+        return $this->isNamespaced($class)
+            ? str_plural(substr(strrchr($class, '\\'), 1))
+            : str_plural($class);
     }
 
     /**
