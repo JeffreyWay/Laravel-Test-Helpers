@@ -13,6 +13,7 @@ class Factory {
 
     /**
      * Pluralized form of classname
+     *
      * @var string
      */
     protected $tableName;
@@ -58,8 +59,7 @@ class Factory {
     }
 
     /*
-     * Create a factory AND save
-     // * it to the DB.
+     * Create a factory AND save it to the DB.
      *
      * @param  string $class
      * @param  array  $columns
@@ -83,7 +83,7 @@ class Factory {
      * @param  array  $columns
      * @return array
      */
-    public static function attributesFor($class, $columns = array())
+    public static function attributesFor($class, array $columns = array())
     {
         return static::make($class, $columns)->toArray();
     }
