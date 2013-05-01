@@ -235,30 +235,51 @@ class Factory {
     {
         if ($name === 'id') return;
 
-        // We'll first try to get special fields
-        // That way, we can insert appropriate
-        // values, like an email or first name
-        if (preg_match('/name|email|phone|age/i', $name, $matches))
-        {
-            $method = $matches[0];
-        }
-
-        // If we couldn't, we'll instead grab
-        // the datatype for the field, and
-        // generate a value to fit that.
-        else
-        {
-            $method = $this->getDataType($col);
-        }
-
-        // Create the method name to call and call it
-        $method = 'get' . ucwords($method);
+        $method = $this->getFakeMethodName($name, $col);
         if (method_exists($this->dataStore, $method))
         {
             return $this->dataStore->{$method}();
         }
 
         throw new \Exception('Could not calculate correct fixture method.');
+    }
+
+    /**
+     * Build the faker method
+     *
+     * @param  string $field
+     * @return string
+     */
+    protected function getFakeMethodName($field, $col)
+    {
+        // We'll first try to get special fields
+        // That way, we can insert appropriate
+        // values, like an email or first name
+        $method = $this->checkForSpecialField($field);
+
+        // If we couldn't, we'll instead grab
+        // the datatype for the field, and
+        // generate a value to fit that.
+        if (!$method) $method = $this->getDataType($col);
+
+        // Build the method name
+        return 'get' . ucwords($method);
+    }
+
+    /**
+     * Search for special field names
+     *
+     * @param  string $field
+     * @return mixed
+     */
+    protected function checkForSpecialField($field)
+    {
+        $special = [
+            'name', 'email', 'phone',
+            'age'
+        ];
+
+        return in_array($field, $special) ? $field : false;
     }
 
     /**
