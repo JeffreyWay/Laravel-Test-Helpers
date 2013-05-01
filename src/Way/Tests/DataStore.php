@@ -3,6 +3,13 @@
 class DataStore {
 
     /**
+     * Registered name field value
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
      * Get random string
      *
      * @return string

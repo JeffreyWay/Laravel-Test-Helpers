@@ -16,13 +16,6 @@ class Factory {
     protected $tableName;
 
     /**
-     * Registered name field value
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * DB Layer
      *
      * @var Illuminate\Database\DatabaseManager
@@ -233,7 +226,7 @@ class Factory {
         // If we couldn't, we'll instead grab
         // the datatype for the field, and
         // generate a value to fit that.
-        else
+        elsei
         {
             $method = $this->getDataType($col);
         }
