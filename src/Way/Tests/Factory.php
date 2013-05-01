@@ -243,7 +243,7 @@ class Factory {
      */
     protected function createRelationship($class)
     {
-        return static::create($model)->id;
+        return static::create($class)->id;
     }
 
     /**
