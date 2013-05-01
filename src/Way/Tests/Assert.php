@@ -5,7 +5,9 @@ require_once 'TestFacade.php';
 class Assert extends TestFacade {
     protected $aliases = array(
         'eq'       => 'assertEquals',
-        'has'      => 'assertContains'
+        'has'      => 'assertContains',
+        'type'     => 'assertInternalType',
+        'instance' => 'assertInstanceOf'
     );
 
     protected function getMethod($methodName)
