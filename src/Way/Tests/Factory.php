@@ -37,6 +37,14 @@ class Factory {
     protected static $columns;
 
     /**
+     * Whether models are being
+     * saved to the DB
+     *
+     * @var boolean
+     */
+    protected static $isSaving = false;
+
+    /**
      * Constructor
      *
      * @param $db
@@ -56,6 +64,8 @@ class Factory {
      */
     public static function create($class, array $columns = array())
     {
+        static::$isSaving = true;
+
         $instance = static::make($class, $columns);
 
         $instance->save();
@@ -110,11 +120,10 @@ class Factory {
         // First, we dynamically fetch the fields for the table
         $columns = $this->getColumns($this->getTableName());
 
-        // Then, for each field, we set a dummy value
-        // on the model.
+        // Then, we set dummy value on the model.
         $this->setColumns($columns);
 
-        // Finally, if they specified any overrides...
+        // Finally, if they specified any overrides, like
         // Factory::make('Post', ['title' => null]),
         // we'll make those take precendence.
         $this->applyOverrides($overrides);
@@ -170,7 +179,6 @@ class Factory {
         // $columns property for future fetching.
         if (isset(static::$columns[$this->tableName]))
         {
-            // then just grab those fields
             return static::$columns[$this->tableName];
         }
 
@@ -203,7 +211,7 @@ class Factory {
 
         // Do we need to create a relationship?
         // Look for a field, like author_id or author-id
-        if (preg_match('/([A-z]+)[-_]id$/i', $name, $matches))
+        if (static::$isSaving and preg_match('/([A-z]+)[-_]id$/i', $name, $matches))
         {
             // If found, create the relationship
             return $this->createRelationship($matches[1]);
