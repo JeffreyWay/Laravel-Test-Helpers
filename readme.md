@@ -235,7 +235,9 @@ class DemoTest extends PHPUnit_Framework_TestCase {
     Assert::true(true);
 
     Should::equal(4, 2 + 2);
+    Should::eq(4, 2 + 2);
     Assert::equals(4, 2 + 2);
+    Assert::eq(4, 2 + 2);
 
     Should::beGreaterThan(20, 21);
     Assert::greaterThan(20, 21);
