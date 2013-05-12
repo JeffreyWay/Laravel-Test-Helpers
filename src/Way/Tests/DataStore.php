@@ -32,6 +32,16 @@ class DataStore {
     {
         return rand(1, 100);
     }
+    
+    /**
+     * Get boolean
+     *
+     * @return boolean
+     */
+    public function getBoolean()
+    {
+        return false;
+    }
 
     /**
      * Get random name
