@@ -71,8 +71,9 @@ class DataStore {
             : $this->getName();
 
         $name = strtolower($name);
+        $random = $this->getInteger();
 
-        return "{$name}@example.com";
+        return "{$name}-{$random}@example.com";
     }
 
     /**
