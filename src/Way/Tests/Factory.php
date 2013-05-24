@@ -274,12 +274,12 @@ class Factory {
      */
     protected function checkForSpecialField($field)
     {
-        $special = [
+        $special = array(
             'name', 'email', 'phone',
             'age', 'address', 'city',
             'state', 'zip', 'street',
             'website'
-        ];
+        );
 
         return in_array($field, $special) ? $field : false;
     }
