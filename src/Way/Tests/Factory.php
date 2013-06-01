@@ -310,7 +310,11 @@ class Factory {
      */
     protected function createRelationship($class)
     {
-        return static::create($class)->id;
+        $parent = get_class($this->class);
+        $namespace = $this->isNamespaced($parent)
+                        ? str_replace(substr(strrchr($parent, '\\'), 1), '', $parent)
+                        : null;
+        return static::create($namespace.$class)->id;
     }
 
     /**
