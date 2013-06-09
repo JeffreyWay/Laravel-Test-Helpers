@@ -310,6 +310,8 @@ class Factory {
      */
     protected function createRelationship($class)
     {
+        $class = ucwords($class);
+        
         return static::create($class)->id;
     }
 
