@@ -34,6 +34,27 @@ class DataStore {
     }
     
     /**
+     * Get random decimal
+     *
+     * @return integer
+     */
+    public function getDecimal()
+    {
+        return $this->getInteger() + .50;
+    }
+    
+    /**
+     * Get random float
+     *
+     * @return float
+     */
+    public function getFloat()
+    {
+        return $this->getDecimal();
+    }
+
+    
+    /**
      * Get boolean
      *
      * @return boolean

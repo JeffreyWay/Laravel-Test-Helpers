@@ -314,6 +314,7 @@ class Factory {
         $namespace = $this->isNamespaced($parent)
                         ? str_replace(substr(strrchr($parent, '\\'), 1), '', $parent)
                         : null;
+
         return static::create($namespace.$class)->id;
     }
 
