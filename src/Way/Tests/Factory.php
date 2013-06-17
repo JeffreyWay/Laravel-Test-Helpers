@@ -1,6 +1,7 @@
 <?php namespace Way\Tests;
 
 use \Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Str;
 
 class ModelNotFoundException extends \Exception {}
 
@@ -156,6 +157,7 @@ class Factory {
      */
     protected function createModel($class)
     {
+        $class = Str::studly($class);
         if (class_exists($class))
             return new $class;
 
