@@ -214,12 +214,23 @@ class DataStore {
 
     /**
      * Get current MySQL-formatted date
+     * Get current MySQL-formatted datetime
      *
      * @return string
      */
     public function getDatetime()
     {
         return date('Y-m-d H:i:s');
+    }
+
+    /**
+     * Get current MySQL-formatted date
+     *
+     * @return string
+     */
+    public function getDate()
+    {
+        return date('Y-m-d');
     }
 
     /**
