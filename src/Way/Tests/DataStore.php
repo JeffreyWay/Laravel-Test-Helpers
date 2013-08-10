@@ -32,7 +32,7 @@ class DataStore {
     {
         return rand(1, 100);
     }
-    
+
     /**
      * Get random decimal
      *
@@ -42,7 +42,7 @@ class DataStore {
     {
         return $this->getInteger() + .50;
     }
-    
+
     /**
      * Get random float
      *
@@ -53,7 +53,7 @@ class DataStore {
         return $this->getDecimal();
     }
 
-    
+
     /**
      * Get boolean
      *
@@ -76,6 +76,20 @@ class DataStore {
         );
 
         return $this->name = $this->random($names);
+    }
+
+    /**
+     * Get random title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        $adjectives = array(
+            'Great', 'Amazing', 'Silly', 'Inspiring', 'First'
+        );
+
+        return 'My ' . $this->random($adjectives) . ' Title';
     }
 
     /**
