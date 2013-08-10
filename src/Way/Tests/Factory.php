@@ -280,7 +280,7 @@ class Factory {
             'name', 'email', 'phone',
             'age', 'address', 'city',
             'state', 'zip', 'street',
-            'website, title'
+            'website', 'title'
         );
 
         return in_array($field, $special) ? $field : false;
