@@ -159,6 +159,37 @@ Currently, you can assert:
 - `assertHasOne`
 - `assertHasMany`
 
+## Controller Helpers
+
+This package contains a small list of controller-specific helper methods. Include them, like so:
+
+```php
+<?php
+
+class ExampleTest extends TestCase {
+    use Way\Tests\ControllerHelpers;
+}
+```
+
+### `see`
+
+Use the `see` or `assertSee` method to verify text content for a given response.
+
+```php
+public function testFindHelloOnHomePage()
+{
+    $this->call('GET', '/');
+    
+    $this->see('Hello World');
+}
+```
+
+Optionally, you may specify an HTML container. For example, to search for *My Post* within an `h1` tag... 
+
+```php
+$this->see('My Post', 'h1');
+```
+
 ## Assert and Should
 
 > [Prefer a video introduction](https://dl.dropbox.com/u/774859/GitHub-Repos/PHPUnit-Wrappers.mp4)?
