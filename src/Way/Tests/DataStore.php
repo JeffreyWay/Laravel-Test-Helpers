@@ -26,9 +26,29 @@ class DataStore {
     /**
      * Get random integer
      *
-     * @return intger
+     * @return integer
      */
     public function getInteger()
+    {
+        return rand(1, 100);
+    }
+
+    /**
+     * Get random big integer
+     *
+     * @return integer
+     */
+    public function getBigint()
+    {
+        return rand(1000, 10000);
+    }
+
+    /**
+     * Get random small integer
+     *
+     * @return integer
+     */
+    public function getSmallint()
     {
         return rand(1, 100);
     }
