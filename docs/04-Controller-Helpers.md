@@ -14,7 +14,7 @@ class ExampleTest extends TestCase {
 
 ### `see`
 
-Use the `see` or `assertSee` method to verify text content for a given response.
+Use the `see`, `shouldSee`, or `assertSee` method to verify text content for a given response. Each of these does the same thing. Just use the one that feels most readable to you.
 
 ```php
 public function testFindHelloOnHomePage()
@@ -29,3 +29,19 @@ Optionally, you may specify an HTML container. For example, to search for *My Po
 
 ```php
 $this->see('My Post', 'h1');
+```
+
+### notSee
+
+Use `notSee`, `shouldNotSee`, or `assertNotSee` to perform the opposite, like so:
+
+
+```php
+public function testFindHelloOnHomePage()
+{
+    $this->call('GET', '/');
+    
+    $this->see('Die Wil Wheaton');
+    $this->notSee('Die Sheldon');
+}
+```
