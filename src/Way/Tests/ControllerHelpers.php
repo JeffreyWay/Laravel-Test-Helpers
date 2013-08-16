@@ -32,7 +32,7 @@ trait ControllerHelpers {
         );
     }
 
-    public function assertNotSee($text, $element = 'body')
+    protected function assertNotSee($text, $element = 'body')
     {
         $matches = $this->getMatches($text, $element);
 
