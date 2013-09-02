@@ -81,7 +81,7 @@ class DataStore {
      */
     public function getBoolean()
     {
-        return false;
+        return 0;
     }
 
     /**
