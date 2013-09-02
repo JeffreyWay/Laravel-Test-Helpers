@@ -55,13 +55,52 @@ trait ModelHelpers {
     {
         $this->assertRespondsTo($relationship, $class);
 
+        $args = $this->getArgumentsRelationship($relationship, $class, $type);
+
         $class = Mockery::mock($class."[$type]");
 
-        $class->shouldReceive($type)
-              ->with('/' . str_singular($relationship) . '/i')
-              ->once();
+        switch(count($args))
+        {
+            case 1 :
+                $class->shouldReceive($type)
+                      ->once()
+                      ->with('/' . str_singular($relationship) . '/i');
+                break;
+            case 2 :
+                $class->shouldReceive($type)
+                      ->once()
+                      ->with('/' . str_singular($relationship) . '/i', $args[1]);
+                break;
+            case 3 :
+                $class->shouldReceive($type)
+                      ->once()
+                      ->with('/' . str_singular($relationship) . '/i', $args[1], $args[2]);
+                break;
+            case 4 :
+                $class->shouldReceive($type)
+                      ->once()
+                      ->with('/' . str_singular($relationship) . '/i', $args[1], $args[2], $args[3]);
+                break;
+            default :
+                $class->shouldReceive($type)
+                      ->once();
+                break;
+        }
 
         $class->$relationship();
+    }
+
+    public function getArgumentsRelationship($relationship, $class, $type) {
+        $mocked = Mockery::mock($class."[$type]");
+
+        $mocked->shouldReceive($type)
+              ->once()
+              ->andReturnUsing(function ()
+              {
+                return func_get_args();
+              });
+
+        return $mocked->$relationship();
     }
 
 }
