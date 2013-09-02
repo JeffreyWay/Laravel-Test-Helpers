@@ -41,6 +41,16 @@ trait ModelHelpers {
         $this->assertRelationship($relation, $class, 'hasOne');
     }
 
+    public function assertMorphMany($relation, $class, $morphable)
+    {
+        $this->assertRelationship($relation, $class, 'morphMany');
+    }
+
+    public function assertMorphTo($relation, $class)
+    {
+        $this->assertRelationship($relation, $class, 'morphTo');
+    }
+
     public function assertRespondsTo($method, $class, $message = null)
     {
         $message = $message ?: "Expected the '$class' class to have method, '$method'.";
