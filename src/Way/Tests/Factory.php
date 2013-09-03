@@ -145,8 +145,8 @@ class Factory {
     protected function parseTableName($class)
     {
         return $this->isNamespaced($class)
-            ? str_plural(substr(strrchr($class, '\\'), 1))
-            : str_plural($class);
+            ? snake_case(str_plural(substr(strrchr($class, '\\'), 1)))
+            : snake_case(str_plural($class));
     }
 
     /**
