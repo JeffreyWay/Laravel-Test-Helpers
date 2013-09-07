@@ -1,6 +1,6 @@
 # Model Helpers
 
-### `assertValid and `assertNotValid`
+### `assertValid` and `assertNotValid`
 
 ```php
 <?php
