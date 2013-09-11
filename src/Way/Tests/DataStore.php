@@ -20,7 +20,7 @@ class DataStore {
             'foo', 'bar', 'baz', 'bizz'
         );
 
-        return $this->random($strings);
+        return $this->random($strings) . '-' . $this->getInteger();
     }
 
     /**
@@ -30,7 +30,7 @@ class DataStore {
      */
     public function getInteger()
     {
-        return rand(1, 100);
+        return rand(1, 10000);
     }
 
     /**

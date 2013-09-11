@@ -42,16 +42,23 @@ class Factory {
     protected static $isSaving = false;
 
     /**
+     * Stores the namespace root for the class
+     *
+     * @var string
+     */
+    protected static $rootNamespace;
+
+    /**
      * For retrieving dummy data
      *
      * @var DataStore
      */
     protected $dataStore;
 
+
     /**
-     * Constructor
-     *
-     * @param $db
+     * @param DatabaseManager $db
+     * @param DataStore       $dataStore
      */
     public function __construct(DatabaseManager $db = null, DataStore $dataStore = null)
     {
@@ -59,7 +66,7 @@ class Factory {
         $this->dataStore = $dataStore ?: new DataStore;
     }
 
-    /*
+    /**
      * Create a factory AND save it to the DB.
      *
      * @param  string $class
@@ -69,6 +76,8 @@ class Factory {
     public static function create($class, array $columns = array())
     {
         static::$isSaving = true;
+
+        static::setRootNamespace($class);
 
         $instance = static::make($class, $columns);
 
@@ -109,6 +118,17 @@ class Factory {
     }
 
     /**
+     * Saves the root namespace for a class
+     *
+     * @param $class
+     */
+    protected static function setRootNamespace($class)
+    {
+        $pos = strrpos($class, '\\');
+        static::$rootNamespace = substr($class, 0, $pos);
+    }
+
+    /**
      * Set dummy data on fields
      *
      * @param $class Name of class to create factory for
@@ -129,7 +149,7 @@ class Factory {
 
         // Finally, if they specified any overrides, like
         // Factory::make('Post', ['title' => null]),
-        // we'll make those take precendence.
+        // we'll make those take precedence.
         $this->applyOverrides($overrides);
 
         // And then return the new class
@@ -154,10 +174,12 @@ class Factory {
      *
      * @param  string $class
      * @return object
+     * @throws ModelNotFoundException
      */
     protected function createModel($class)
     {
         $class = Str::studly($class);
+
         if (class_exists($class))
             return new $class;
 
@@ -179,6 +201,7 @@ class Factory {
      * If overrides are set, then
      * override default values with them.
      *
+     * @param array $overrides
      * @return void
      */
     protected function applyOverrides(array $overrides)
@@ -232,6 +255,7 @@ class Factory {
      *
      * @param string $name
      * @param string $col
+     * @throws \Exception
      */
     protected function setColumn($name, $col)
     {
@@ -250,6 +274,8 @@ class Factory {
      * Build the faker method
      *
      * @param  string $field
+     * @param string $col
+     *
      * @return string
      */
     protected function getFakeMethodName($field, $col)
@@ -298,7 +324,12 @@ class Factory {
         // Look for a field, like author_id or author-id
         if (static::$isSaving and preg_match('/([A-z]+)[-_]id$/i', $field, $matches))
         {
-            return $matches[1];
+            // We'll assume that this is a true foreign key, if the field is foo_id
+            // and a corresponding Foo or Namespace\Foo class exists
+            if ($this->confirmForeignKeyReferencesRelationship($matches[1]))
+            {
+                return $matches[1];
+            }
         }
 
         return false;
@@ -312,12 +343,7 @@ class Factory {
      */
     protected function createRelationship($class)
     {
-        $parent = get_class($this->class);
-        $namespace = $this->isNamespaced($parent)
-                        ? str_replace(substr(strrchr($parent, '\\'), 1), '', $parent)
-                        : null;
-
-        return static::create($namespace.$class)->id;
+        return static::create(static::$rootNamespace."\\$class")->id;
     }
 
     /**
@@ -337,7 +363,7 @@ class Factory {
      * like Factory::user() or Factory::post()
      *
      * @param  string $class The model to mock
-     * @param  array $args
+     * @param  array $overrides
      * @return object
      */
     public static function __callStatic($class, $overrides)
@@ -347,6 +373,18 @@ class Factory {
         $instance = new static;
 
         return $instance->fire($class, $overrides);
+    }
+
+    /**
+     * Determines if field_ID refers to a relationship
+     *
+     * @param $class
+     *
+     * @return bool
+     */
+    protected function confirmForeignKeyReferencesRelationship($class)
+    {
+        return class_exists($class) or class_exists(static::$rootNamespace."\\$class");
     }
 
 }
