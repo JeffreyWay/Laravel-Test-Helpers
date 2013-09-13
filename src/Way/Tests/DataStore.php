@@ -56,7 +56,7 @@ class DataStore {
     /**
      * Get random decimal
      *
-     * @return integer
+     * @return float
      */
     public function getDecimal()
     {
