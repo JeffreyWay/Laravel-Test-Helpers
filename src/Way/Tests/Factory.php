@@ -228,8 +228,13 @@ class Factory {
             return static::$columns[$this->tableName];
         }
 
+        $schema_manager = $this->db->getDoctrineSchemaManager($tableName);
+        // map enum and set to string, since they are not supported yet by doctrine
+        $schema_manager->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $schema_manager->getDatabasePlatform()->registerDoctrineTypeMapping('set', 'string');
+
         // This will only run the first time the factory is created.
-        return static::$columns[$this->tableName] = $this->db->getDoctrineSchemaManager()->listTableDetails($tableName)->getColumns();
+        return static::$columns[$this->tableName] = $schema_manager->listTableColumns($tableName);
     }
 
     /**
