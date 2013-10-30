@@ -1,6 +1,6 @@
 {
-    "name": "way/laravel-test-helpers",
-    "description": "Easier testing in Laravel.",
+    "name": "duellsy/laravel-test-helpers",
+    "description": "Easier testing in Laravel. (for temp use, supporting enums and set fields)",
     "authors": [
         {
             "name": "Jeffrey Way",
